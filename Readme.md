@@ -16,8 +16,7 @@ The final result is a map where ~260 taxi zones are clustered into 6 distinct gr
 
 An interactive version of this map is available here:  
 ### 🔗 Explore the Interactive Map
-
-👉 [Click here to open the NYC Semantic Map](https://htmlpreview.github.io/?https://github.com/soumyaranjan4446/Urban-Mobility---Semantic-Analyzer/blob/main/output/semantic_map_interactive.html)
+<img src="https://github.com/soumyaranjan4446/Urban-Mobility---Semantic-Analyzer/blob/main/images/map.png">
 
 ---
 
