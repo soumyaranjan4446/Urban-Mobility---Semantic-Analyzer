@@ -1,57 +1,114 @@
-# This string contains the full text for your README.md file.
-# Copy the text (starting from # Project 2...) and paste it into a new file.
+# 🏙️ Project: Semantic Mobility Analyzer for NYC
 
-readme_content = """
-# Project 2: Semantic Mobility Analyzer for NYC Taxi Trajectories
-
-This project analyzes a large-scale taxi trajectory dataset to discover "functional regions" in New York City. It moves beyond simple hotspot mapping by clustering taxi zones based on their complete 24/7 activity profiles, allowing for the inference of semantic meaning (e.g., "Work Zone," "Residential Zone," "Nightlife Hub").
+This project analyzes a large-scale NYC taxi trajectory dataset to discover "functional regions" in New York City. It moves beyond simple hotspot mapping by clustering taxi zones based on their complete 24/7 activity profiles, allowing for the inference of semantic meaning (e.g., "Work Zone," "Residential Zone," "Nightlife Hub").
 
 The core methodology is a practical implementation of the spatio-temporal data mining framework described in the paper:
-[cite_start]**Ghosh, S., Ghosh, S. K., & Buyya, R. (2020). MARIO: A spatio-temporal data mining framework on Google Cloud to explore mobility dynamics from taxi trajectories. *Journal of Network and Computer Applications*, 164, 102692.** [cite: 23]
 
-## Final Interactive Map
-
-**(Open the `semantic_map_interactive.html` file in your browser to explore)**
-
-### [Insert Screenshot of your Interactive Folium Map here]
-
-![Static Map](output/semantic_cluster_map.png)
+**Ghosh, S., Ghosh, S. K., & Buyya, R. (2020).**  
+*MARIO: A spatio-temporal data mining framework on Google Cloud to explore mobility dynamics from taxi trajectories.*  
+Journal of Network and Computer Applications, 164, 102692.
 
 ---
 
-## Methodology
+## 🗺️ Final Semantic Map
 
-This project follows the core concepts of the MARIO framework to analyze urban mobility.
+The final result is a map where ~260 taxi zones are clustered into 6 distinct groups based on their "activity DNA." Each color represents a unique, learned "zone personality."
 
-1.  **Data Pre-processing:** The NYC Yellow Taxi dataset (Jan 2023) was loaded, cleaned, and enriched.
-2.  [cite_start]**Define Functional Regions:** Instead of using arbitrary grids, we used the official **NYC Taxi Zones** as our pre-defined "functional regions"[cite: 24], the primary unit of analysis.
-3.  [cite_start]**Define Mobility Events:** Following the paper, we defined **"mobility events"** as individual pick-ups and drop-offs[cite: 25].
-4.  **Feature Engineering:** We aggregated these events to build a 96-dimension feature vector for each of the ~260 taxi zones. This vector represents the zone's complete activity profile, broken down by:
-    * [cite_start]**Travel Demand** (Pick-ups) [cite: 26] & Drop-offs
-    * **Time Slot** (24 hours)
-    * **Day Type** (Weekday vs. Weekend)
-5.  **Clustering & Semantic Analysis:**
-    * The 96-dimension feature matrix was normalized using `StandardScaler` to ensure clustering was based on pattern *shape*, not just *volume*.
-    * `KMeans` clustering was used to group the ~260 zones into 6 distinct "semantic clusters."
-    * [cite_start]By plotting the average 96-dimension profile for each cluster, we can infer its real-world function (e.g., "Source" vs. "Sink")[cite: 27].
+An interactive version of this map is available here:  
+### 🔗 Explore the Interactive Map
+
+👉 [Click here to open the NYC Semantic Map](https://htmlpreview.github.io/?https://github.com/soumyaranjan4446/Urban-Mobility---Semantic-Analyzer/blob/main/output/semantic_map_interactive.html)
 
 ---
 
-## Semantic Cluster Profiles
+## 📌 Methodology
 
-The 6 clusters discovered by the model show distinct, human-understandable patterns.
+This project was executed in four distinct phases, following the logic of the MARIO framework.
 
-### [Insert your Cluster Profile plots from Phase 3 here]
+---
 
-**Example Analysis:**
+### ✅ Phase 1: Data Pre-processing
 
-* **Cluster 0 (Work Zone / Sink):** This cluster shows a massive spike in **Weekday Drop-offs** between 7-10 AM and a corresponding spike in **Weekday Pick-ups** between 4-7 PM. Activity on weekends is minimal. This is the classic signature of a "Work Zone."
-* **Cluster 1 (Residential Zone / Source):** This cluster shows the opposite pattern: high **Weekday Pick-ups** in the morning and high **Weekday Drop-offs** in the evening, with moderate activity on weekends. This is a classic "Residential Zone."
-* **Cluster 4 (Nightlife Hub):** This cluster is quiet all day but shows a dramatic spike in both pick-ups and drop-offs late at night (9 PM - 2 AM), especially on **Weekends**.
+The NYC Yellow Taxi dataset and the official Taxi Zone shapefile were loaded. The trip data was cleaned, and all trips were enriched with time-based features (`pickup_hour`, `dropoff_hour`, `day_type`).
 
-"""
+An initial sanity check of the raw data confirmed the expected, city-wide mobility patterns:
 
-print("--- README.md Content ---")
-print(readme_content)
-print("\n---")
-print("ACTION: Copy the text above and save it as README.md in your project folder.")
+• Weekdays (blue): A bimodal (two-peak) pattern for morning and evening commutes  
+• Weekends (orange): A unimodal (single-peak) pattern for later, sustained leisure and nightlife activity
+
+---
+
+### ✅ Phase 2: Mobility Event & Feature Engineering
+
+This was the most critical step, where we defined our "functional regions" as the official NYC Taxi Zones.
+
+Following the paper, we defined "mobility events" (pick-ups and drop-offs) and aggregated their counts by region, hour, and day type. This created a **96-dimension feature vector** (24 hours × 2 day types × 2 event types) for each of the ~260 taxi zones.
+
+The maps below show the total aggregated pick-ups ("Travel Demand") and drop-offs. This shows where activity is (volume), but not the pattern. Our project's goal was to cluster based on the 96-feature pattern.
+
+---
+
+### ✅ Phase 3: ML Clustering & Semantic Analysis
+
+With the feature matrix ready, we performed unsupervised machine learning to find the patterns.
+
+• Normalization: Used StandardScaler to cluster based on the shape of a zone's activity pattern  
+• Clustering: Used KMeans, and k = 6 was selected via the Elbow Method  
+• Analysis: Examined cluster profiles to infer semantic meaning (e.g., "Source" vs "Sink")
+
+---
+
+### ✅ Phase 4: Visualization
+
+• Static Map: GeoPandas visualization of clusters on NYC Taxi Zones  
+• Interactive Map: Folium-based map (semantic_map_interactive.html)  
+• Cluster Profiles: Plotted to reveal functional region behaviors
+
+---
+
+## 🎯 Semantic Cluster Profiles: The 6 "Personalities" of NYC
+
+Below are the interpreted functional characteristics of each learned cluster.
+
+---
+
+### 🏠 Cluster 0: "The Outer-Borough Residential (Source)"
+
+Analysis:  
+This profile (covering Queens, Brooklyn, Bronx...) is a classic "Source" region. It shows a sharp peak in Weekday Pick-ups (red line) between 7-8 AM as people leave for work, and a corresponding peak in Weekday Drop-offs (blue line) in the evening as they return home. Its overall volume is much lower than the Manhattan clusters.
+
+---
+
+### ✈️ Cluster 1: "The Transport Hub" (Airports)
+
+Analysis:  
+This profile is unmistakable. It shows massive, sustained 24/7 activity with very high volumes for both pick-ups and drop-offs. The pattern is nearly identical on weekdays and weekends, showing it is not tied to a 9-to-5 commute. This unique signature belongs to JFK and LaGuardia Airports.
+
+---
+
+### 🏢 Cluster 3: "The 9-to-5 Work Zone (Sink)"
+
+Analysis:  
+This Manhattan cluster is the quintessential "Work Zone" and a classic "Sink" region. On weekdays, there is a massive influx of Drop-offs (blue line) in the morning (peaking 8-10 AM) and a massive exodus of Pick-ups (red line) in the evening (peaking 5-7 PM). On weekends, the area is comparatively quiet.
+
+---
+
+### 🏙️ Cluster 4: "The High-Density Work/Daytime Hub"
+
+Analysis:  
+This profile is also a Manhattan work zone but with a different flavor. The weekday drop-offs start high (the 8 AM commute) but stay high all day, peaking again at 4 PM. This suggests a dense commercial area (like Cluster 3) but with more all-day activity (meetings, errands, lunch) beyond the strict 9-to-5.
+
+---
+
+### 🎭 Cluster 2: "The Entertainment & Nightlife Zone"
+
+Analysis:  
+This Manhattan cluster's activity builds throughout the day, with drop-offs and pick-ups both peaking in the evening. Crucially, the Weekend (right chart) is significantly busier than the weekday, with high activity lasting late into the night. This is the signature of areas known for dining, theater, and nightlife.
+
+---
+
+### 🛍️ Cluster 5: "The All-Day Leisure & Shopping Zone"
+
+Analysis:  
+Similar to Cluster 2, this is another high-activity Manhattan zone. However, its weekend profile shows a massive, broad peak in both pick-ups and drop-offs that lasts all afternoon and evening (12 PM - 10 PM). This suggests areas defined by all-day attractions like shopping, tourism, and restaurants (e.g., SoHo, Times Square).
+
