@@ -1,0 +1,16 @@
+# .gitignore
+
+# 1. Ignore all big raw data
+# We will link to this in the README instead
+data/yellow_tripdata_*.parquet
+
+# 2. Ignore all of the shapefile data
+data/taxi_zones/
+
+# 3. Ignore Python environment files
+__pycache__/
+*.pyc
+.env
+
+# 4. Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
